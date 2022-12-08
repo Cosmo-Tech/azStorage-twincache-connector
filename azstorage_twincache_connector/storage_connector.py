@@ -2,10 +2,11 @@
 # Licensed under the MIT license.
 import logging
 
-from azure.identity import DefaultAzureCredential
+from azure.identity import EnvironmentCredential
 from azure.storage.blob import BlobServiceClient
 
 logger = logging.getLogger(__name__)
+
 
 class StorageConnector:
     """
@@ -16,8 +17,7 @@ class StorageConnector:
         self.account_name = account_name
         self.container_name = container_name
         self.blobClient = BlobServiceClient(account_url=f"https://{account_name}.blob.core.windows.net/",
-                                            credential=DefaultAzureCredential()).get_container_client(container_name)
-
+                                            credential=EnvironmentCredential()).get_container_client(container_name)
 
     def list_files(self):
-        self.blobClient.list_blobs
+        return self.blobClient.list_blobs()
