@@ -8,7 +8,7 @@ on:
       - '*'
 
 env:
-  IMAGE_NAME: azStorage-twincache-connector
+  IMAGE_NAME: azstorage-twincache-connector
 
 jobs:
 
