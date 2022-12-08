@@ -5,5 +5,5 @@ set -x
 
 docker run \
 --network="host" \
---env-file="./docker_envvars"
+--env-file="./docker_envvars" \
 azstorage-twincache-connector

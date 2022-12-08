@@ -4,7 +4,7 @@ import logging
 import os
 import sys
 
-from azStorage_Twincache_Connector.storage_connector import StorageConnector
+from azstorage_twincache_connector.storage_connector import StorageConnector
 
 
 main_logger_name = "azStorageTwincacheConnector_main"
