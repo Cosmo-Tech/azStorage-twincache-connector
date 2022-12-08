@@ -1,6 +1,8 @@
 # Copyright (c) Cosmo Tech corporation.
 # Licensed under the MIT license.
 import logging
+import os
+import tempfile
 
 from azure.identity import EnvironmentCredential
 from azure.storage.blob import BlobServiceClient
@@ -21,3 +23,15 @@ class StorageConnector:
 
     def list_files(self):
         return self.blobClient.list_blobs()
+
+    def download_files(self) -> str:
+        tempdir = tempfile.mkdtemp()
+        print("Getting blobs...")
+        for b in self.blobClient.list_blobs():
+            print(f'Downloading "{b.name}"')
+            os.makedirs(os.path.join(tempdir, os.path.dirname(b.name)), exist_ok=True)
+            with open(os.path.join(tempdir, b.name), 'wb') as f:
+                f.write(self.blobClient.download_blob(b.name).readall())
+        return tempdir
+
+

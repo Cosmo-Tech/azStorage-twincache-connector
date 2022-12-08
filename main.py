@@ -46,5 +46,5 @@ if __name__ == "__main__":
         raise Exception(f"Missing environment variables named {missing_env_vars}")
 
     storage_connector = StorageConnector(account_name=storage_account_name, container_name=container_name)
-    for b in storage_connector.list_files():
-        print(b)
+    dataset_folder=storage_connector.download_files()
+    print(f"Dataset is in {dataset_folder}")
