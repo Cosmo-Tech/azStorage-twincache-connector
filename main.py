@@ -35,8 +35,8 @@ if __name__ == "__main__":
 
     check_env_var()
     if not missing_env_vars:
-        storage_account_name = os.getenv("STORAGE_ACCOUNT")
-        storage_blob_path = os.getenv("STORAGE_PATH")
+        storage_account_name = os.getenv("ACCOUNT_NAME")
+        container_name = os.getenv("CONTAINER_NAME")
         twin_cache_host = os.getenv("TWIN_CACHE_HOST")
         twin_cache_port = os.getenv("TWIN_CACHE_PORT")
         twin_cache_name = os.getenv("TWIN_CACHE_NAME")
@@ -45,4 +45,4 @@ if __name__ == "__main__":
     else:
         raise Exception(f"Missing environment variables named {missing_env_vars}")
 
-    storage_connector = StorageConnector(account_name=storage_account_name, storage_path=storage_blob_path)
+    storage_connector = StorageConnector(account_name=storage_account_name, container_name=container_name)
