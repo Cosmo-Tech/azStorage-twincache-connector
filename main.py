@@ -4,10 +4,12 @@ import logging
 import os
 import sys
 
+from azStorage_Twincache_Connector.storage_connector import StorageConnector
+
 
 main_logger_name = "azStorageTwincacheConnector_main"
 
-env_var_required = ["AZURE_CLIENT_ID", "AZURE_TENANT_ID", "AZURE_CLIENT_SECRET", "STORAGE_NAME", "STORAGE_PATH",
+env_var_required = ["AZURE_CLIENT_ID", "AZURE_TENANT_ID", "AZURE_CLIENT_SECRET", "ACCOUNT_NAME", "CONTAINER_NAME",
                     "TWIN_CACHE_HOST", "TWIN_CACHE_PORT", "TWIN_CACHE_NAME"]
 
 missing_env_vars = []
@@ -33,7 +35,7 @@ if __name__ == "__main__":
 
     check_env_var()
     if not missing_env_vars:
-        storage_account_name = os.getenv("STORAGE_NAME")
+        storage_account_name = os.getenv("STORAGE_ACCOUNT")
         storage_blob_path = os.getenv("STORAGE_PATH")
         twin_cache_host = os.getenv("TWIN_CACHE_HOST")
         twin_cache_port = os.getenv("TWIN_CACHE_PORT")
@@ -42,3 +44,5 @@ if __name__ == "__main__":
         twin_cache_password = os.getenv("TWIN_CACHE_PASSWORD")
     else:
         raise Exception(f"Missing environment variables named {missing_env_vars}")
+
+    storage_connector = StorageConnector(account_name=storage_account_name, storage_path=storage_blob_path)
