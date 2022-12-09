@@ -3,8 +3,10 @@
 import logging
 import os
 import sys
+import csv
 
 from azstorage_twincache_connector.storage_connector import StorageConnector
+from CosmoTech_Acceleration_Library.Modelops.core.io.model_importer import ModelImporter
 
 
 main_logger_name = "azStorageTwincacheConnector_main"
@@ -40,11 +42,32 @@ if __name__ == "__main__":
         twin_cache_host = os.getenv("TWIN_CACHE_HOST")
         twin_cache_port = os.getenv("TWIN_CACHE_PORT")
         twin_cache_name = os.getenv("TWIN_CACHE_NAME")
-        twin_cache_rotation = os.getenv("TWIN_CACHE_ROTATION")
+        twin_cache_rotation = int(os.getenv("TWIN_CACHE_ROTATION"))
         twin_cache_password = os.getenv("TWIN_CACHE_PASSWORD")
     else:
         raise Exception(f"Missing environment variables named {missing_env_vars}")
 
+    # download files
     storage_connector = StorageConnector(account_name=storage_account_name, container_name=container_name)
-    dataset_folder=storage_connector.download_files()
+    dataset_folder = storage_connector.download_files()
     print(f"Dataset is in {dataset_folder}")
+
+    twins = []
+    rels = []
+    for r, d, files in os.walk(dataset_folder):
+        for filz in files:
+            file_path = os.path.join(r, filz)
+            with open(file_path) as f:
+                h = csv.DictReader(f).fieldnames
+                if '$sourceId' in h:
+                    print(f'{filz} is rel')
+                    rels.append(file_path)
+                else:
+                    print(f'{filz} is twin')
+                    twins.append(file_path)
+
+    twingraph = ModelImporter(host=twin_cache_host, port=twin_cache_port,
+                              name=twin_cache_name,
+                              source_url=f'{storage_account_name}/{container_name}', graph_rotation=twin_cache_rotation,
+                              password=twin_cache_password)
+    twingraph.bulk_import(twins, rels)
