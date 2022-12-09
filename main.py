@@ -44,7 +44,7 @@ if __name__ == "__main__":
         twin_cache_host = os.getenv("TWIN_CACHE_HOST")
         twin_cache_port = os.getenv("TWIN_CACHE_PORT")
         twin_cache_name = os.getenv("TWIN_CACHE_NAME")
-        twin_cache_rotation = int(os.getenv("TWIN_CACHE_ROTATION")) if "TWIN_CACHE_ROTATION" in os.environ else 1
+        twin_cache_rotation = int(os.getenv("TWIN_CACHE_ROTATION", 1))
         twin_cache_password = os.getenv("TWIN_CACHE_PASSWORD")
     else:
         raise Exception(f"Missing environment variables named {missing_env_vars}")
