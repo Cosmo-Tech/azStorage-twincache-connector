@@ -11,7 +11,8 @@ from CosmoTech_Acceleration_Library.Modelops.core.io.model_importer import Model
 
 main_logger_name = "azStorageTwincacheConnector_main"
 
-env_var_required = ["AZURE_CLIENT_ID", "AZURE_TENANT_ID", "AZURE_CLIENT_SECRET", "ACCOUNT_NAME", "CONTAINER_NAME",
+env_var_required = ["AZURE_CLIENT_ID", "AZURE_TENANT_ID", "AZURE_CLIENT_SECRET",
+                    "ACCOUNT_NAME", "CONTAINER_NAME", "STORAGE_PATH",
                     "TWIN_CACHE_HOST", "TWIN_CACHE_PORT", "TWIN_CACHE_NAME"]
 
 missing_env_vars = []
@@ -39,6 +40,7 @@ if __name__ == "__main__":
     if not missing_env_vars:
         storage_account_name = os.getenv("ACCOUNT_NAME")
         container_name = os.getenv("CONTAINER_NAME")
+        storage_path = os.getenv("STORAGE_PATH")
         twin_cache_host = os.getenv("TWIN_CACHE_HOST")
         twin_cache_port = os.getenv("TWIN_CACHE_PORT")
         twin_cache_name = os.getenv("TWIN_CACHE_NAME")
@@ -48,7 +50,9 @@ if __name__ == "__main__":
         raise Exception(f"Missing environment variables named {missing_env_vars}")
 
     # download files
-    storage_connector = StorageConnector(account_name=storage_account_name, container_name=container_name)
+    storage_connector = StorageConnector(account_name=storage_account_name,
+                                         container_name=container_name,
+                                         storage_path=storage_path)
     dataset_folder = storage_connector.download_files()
     print(f"Dataset is in {dataset_folder}")
 
@@ -59,7 +63,7 @@ if __name__ == "__main__":
             file_path = os.path.join(r, filz)
             with open(file_path) as f:
                 h = csv.DictReader(f).fieldnames
-                if '$sourceId' in h:
+                if 'src' in h:
                     print(f'{filz} is rel')
                     rels.append(file_path)
                 else:
