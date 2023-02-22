@@ -78,10 +78,11 @@ Then run:
 
 ## Data format
 
-Data format authorized is CSV files. 
-The azStorage-twincache-connector will fetch all data regarding <ACCOUNT_NAME> <CONTAINER_NAME> and <STORAGE_PATH>, read all csv files.
+Data format authorized is CSV files. (BOM encoding is not supported)
+ 
+The azStorage-twincache-connector will read all csv files under storage specified with <ACCOUNT_NAME> <CONTAINER_NAME> <STORAGE_PATH>.
 
-The connector will read CSV files header and check if src is present as header in order to discriminate CSV files twins and CSV files relationships.
+The connector will read CSV files header and check if src is present as header in order to discriminate twins CSV files and relationships CSV files.
 
 Bulk insert is based on [redisgraph-bulk-loader](https://github.com/RedisGraph/redisgraph-bulk-loader)
 
