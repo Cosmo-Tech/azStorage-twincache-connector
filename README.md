@@ -2,10 +2,6 @@
 
 The aim of this project is to read data from an Azure storage and store data into Cosmo Tech Twin Cache solution
 
-## Changelog
-
-### Version 1.0.1-rc
-
 #### Features
 
 - Read Azure Storage blob files regarding environment variables
