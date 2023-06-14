@@ -74,7 +74,7 @@ Then run:
 **N.B:**
 
 - Default log level is set to 'debug'
-- Default graph rotation is set to 1
+- Default graph rotation is set to 3
 
 ## Data format
 
@@ -82,18 +82,18 @@ Data format authorized is CSV files. (BOM encoding is not supported)
  
 The azStorage-twincache-connector will read all csv files under storage specified with <ACCOUNT_NAME> <CONTAINER_NAME> <STORAGE_PATH>.
 
-The connector will read CSV files header and check if src is present as header in order to discriminate twins CSV files and relationships CSV files.
+The connector will read CSV files header and check if either the pair of columns ('src', 'dest') or ('source', target') is present as header in order to discriminate twins CSV files and relationships CSV files.
 
 Bulk insert is based on [redisgraph-bulk-loader](https://github.com/RedisGraph/redisgraph-bulk-loader)
 
 **N.B:**
-In the current version (1.0.1-rc), the schema enforcement is not handled, so you should respect the default format, i.e:
+In the current version (1.1.5), the schema enforcement is not handled, so you should respect the default format, i.e:
 - for Twin CSV files: See [node-identifiers](https://github.com/RedisGraph/redisgraph-bulk-loader#node-identifiers)
-  - the first column of the file should be the twin id (preferred header name: id) 
+  - the first column of the file will be set with the column 'id' or 'name'
+        if both are detected import will be canceled 
 - for Relationships CSV files: See [relationships-identifiers](https://github.com/RedisGraph/redisgraph-bulk-loader#relationship-files)
-  - the first column is the relationship source id (preferred header name: src) 
-  - the second column is the relationship destination id (preferred header name: dest)
-
+  - first and second column will be set with ('src', 'dest') or ('source', 'target')
+        if both pairs are detected import will be canceled
 
 
 
