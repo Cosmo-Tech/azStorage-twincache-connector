@@ -20,6 +20,7 @@ env_var_required = ["AZURE_CLIENT_ID", "AZURE_TENANT_ID", "AZURE_CLIENT_SECRET",
 missing_env_vars = []
 
 ST_DETECT = [('source', 'target'), ('src', 'dest')]
+ID_DETECT = ['id', 'name']
 
 
 def check_env_var():
@@ -62,12 +63,6 @@ def transform(reader):
                     new_msg[map_split[0]] = {}
                 new_msg[map_split[0]][map_split[1]] = typed_row
                 new_msg.pop(j)
-            elif j in [src for src, dest in ST_DETECT[1:]]:
-                new_msg['source'] = new_msg[j]
-                new_msg.pop(j)
-            elif j in [dest for src, dest in ST_DETECT[1:]]:
-                new_msg['target'] = new_msg[j]
-                new_msg.pop(j)
         yield new_msg
 
 
@@ -102,6 +97,7 @@ if __name__ == "__main__":
 
     twins = []
     rels = []
+    errors = []
     for r, d, files in os.walk(dataset_folder):
         for filz in files:
             file_path = os.path.join(r, filz)
@@ -111,24 +107,35 @@ if __name__ == "__main__":
                 csv_r = csv.DictReader(f)
                 new_header = list(transform_header(csv_r.fieldnames))
 
-                m = list(map(lambda st: st[0] in new_header and st[1] in new_header, ST_DETECT))
-                if any(m):
+                st_m = list(map(lambda st: st[0] in new_header and st[1] in new_header, ST_DETECT))
+                if any(st_m):
                     print(f'{filz} is rel')
-                    src, dest = [val for use, val in zip(m, ST_DETECT) if use][0]
-                    new_header.pop(new_header.index(src))
-                    new_header.insert(0, 'source')
-                    new_header.pop(new_header.index(dest))
-                    new_header.insert(1, 'target')
+                    if sum(st_m) > 1:
+                        errors.append(f'{filz} detected as relationship has more than one pair of (source, target)')
+                        continue
+                    _src, _dest = [val for use, val in zip(st_m, ST_DETECT) if use][0]
+                    new_header.insert(0, new_header.pop(new_header.index(_src)))
+                    new_header.insert(1, new_header.pop(new_header.index(_dest)))
                     rels.append(output_file_path)
                 else:
                     print(f'{filz} is twin')
-                    new_header.insert(0, new_header.pop(new_header.index('id')))
+                    id_m = list(map(lambda i: i in new_header, ID_DETECT))
+                    if sum(id_m) > 1:
+                        errors.append(f'{filz} detected as twin has more than one id')
+                        continue
+                    _id = [val for use, val in zip(id_m, ID_DETECT) if use][0]
+                    new_header.insert(0, new_header.pop(new_header.index(_id)))
                     twins.append(output_file_path)
 
                 csv_w = csv.DictWriter(out, new_header)
                 csv_w.writeheader()
                 csv_w.writerows(transform(csv_r))
 
+    if len(errors) > 0:
+        print('Following errors has been detected:')
+        for e in errors:
+            print(e)
+        raise Exception('Errors detected in source files. import has been canceled.')
     twingraph = ModelImporter(host=twin_cache_host, port=twin_cache_port,
                               name=twin_cache_name,
                               source_url=f'{storage_account_name}/{container_name}', graph_rotation=twin_cache_rotation,
