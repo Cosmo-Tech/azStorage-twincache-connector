@@ -6,7 +6,6 @@ The aim of this project is to read data from an Azure storage and store data int
 
 - Read Azure Storage blob files regarding environment variables
 - Store data into Cosmo Tech Twin Cache instance
-- Data rotation is handled
 
 ## Environment variables :
 
@@ -21,7 +20,6 @@ Here is the list of environment variables:
 - **TWIN_CACHE_HOST**: the twin cache host
 - **TWIN_CACHE_PORT**: the twin cache port
 - **TWIN_CACHE_NAME**: the twin cache key name where data will be stored
-- **TWIN_CACHE_ROTATION**: defined the data rotation (a.k.a. the amount of keys to keep until data is overwritten) (default 1)
 - **TWIN_CACHE_PASSWORD**: default account/user password (default None)
 
 ## Log level
@@ -59,7 +57,6 @@ TWIN_CACHE_HOST=<twin_cache_host>
 TWIN_CACHE_NAME=<twin_cache_name>
 TWIN_CACHE_PORT=<twin_cache_port>
 TWIN_CACHE_PASSWORD=<twin_cache_password>
-TWIN_CACHE_ROTATION=1
 LOG_LEVEL=DEBUG
 ```
 
@@ -69,8 +66,7 @@ Then run:
 
 **N.B:**
 
-- Default log level is set to 'debug'
-- Default graph rotation is set to 3
+- Default log level is set to 'INFO'
 
 ## Data format
 
