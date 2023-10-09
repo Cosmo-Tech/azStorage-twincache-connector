@@ -83,7 +83,6 @@ if __name__ == "__main__":
         twin_cache_host = os.getenv("TWIN_CACHE_HOST")
         twin_cache_port = os.getenv("TWIN_CACHE_PORT")
         twin_cache_name = os.getenv("TWIN_CACHE_NAME")
-        twin_cache_rotation = int(os.getenv("TWIN_CACHE_ROTATION", 3))
         twin_cache_password = os.getenv("TWIN_CACHE_PASSWORD")
     else:
         raise Exception(f"Missing environment variables named {missing_env_vars}")
@@ -138,6 +137,5 @@ if __name__ == "__main__":
         raise Exception('Errors detected in source files. import has been canceled.')
     twingraph = ModelImporter(host=twin_cache_host, port=twin_cache_port,
                               name=twin_cache_name,
-                              source_url=f'{storage_account_name}/{container_name}', graph_rotation=twin_cache_rotation,
                               password=twin_cache_password)
     twingraph.bulk_import(twins, rels)
